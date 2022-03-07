@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="./assets/imgs/cat.jpg">
+  <style>
+    * {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      color: #222;
+      text-decoration: none;
+    }
+
+    button {
+      border: 1px solid #222;
+      padding: 0 10px;
+      background-color: #fff;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="main-section" id="app"></div>
+
+  <!-- react dom 라이브러리 넣어주기 -->
+  <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+
+  <!-- jsx를 도와주는 babel 넣어주기 -->
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+  <!-- react 내용 작성 -->
+  <!-- 리액트 jsx문법이 사용되는 곳에 type을 text/babel로 설정해줘야 함 -->
+  <script type="text/babel">
+
+    const jsonLocalStorage = {
+      setItem: (key, value) => {
+        localStorage.setItem(key, JSON.stringify(value));
+      },
+      getItem: (key) => {
+        return JSON.parse(localStorage.getItem(key));
+      },
+    };
+
+    const BASE_IMG = {
+      cat : "./assets/imgs/cat.jpg",
+      lion : "./assets/imgs/lion.jpg",
+      icefox : "./assets/imgs/icefox.jpg"
+    }
+
+    const catitemlist = [
+    {url : BASE_IMG.cat, name : "고양이"},
+    {url : BASE_IMG.lion, name : "사자"},
+    {url : BASE_IMG.icefox, name : "눈여우"}]
+
+    // 변수를 컴포넌트로 변환하기 const catItem -> function catItem
+    function CatItem(props){
+      return(
+        <li>
+          <img src={props.img}/>
+        </li>
+      )
+    }
+
+    // 중괄호를 사용해서 작성해야함
+    // 자바스크립트의 변수를 사용하기 위해서는 {} 중괄호 사용
+    //<ul className="cat-list">
+    //</ul>
+
+    const Title = (props) => {
+      return (
+        <h2>
+          {props.children}
+        </h2>
+      )
+    }
+
+    const Favorites = ({favorites}) =>{
+      return(
+        //리액트에서 배열을 순회할때 배열마다 id값이 필요하다.
+        <ul className="cat-list">
+          {favorites.map((item) => {
+            return <CatItem img={item} key={item}/>
+          })}
+        </ul>
+      )
+    }
+
+    const MainCard = ({img, onHeartClick}) => {
+      return(
+        <div className="main-card">
+          <img src={img} alt="사자" width="400"   />
+          <button onClick={onHeartClick}>Heart</button>
+        </div>
+      )
+    }
+
+    const Form = ({updateMainCat}) =>{
+      const includesHangul = (text) => /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/i.test(text);
+
+      const [value, setValue] = React.useState('');
+      const [errorMessage, setErrorMessage] = React.useState('')
+
+      // 생성하기 버튼 이벤트
+      const handleCreateSubmit = (e) => {
+        e.preventDefault();
+        setErrorMessage('')
+        if(value === ''){
+          setErrorMessage('메시지를 입력해주세요')
+          return
+          //만약 빈값이라서 에러메시지 '메시지를 입력해주세요가 나온다면 밑에 updateMainCat을 실행하지말고 hanldCreateSubmit을 종료하기'
+        }
+        updateMainCat()
+      }
+      
+      const handleInputChange = (e) => {
+
+        const userInputValue = e.target.value
+        setErrorMessage('')
+         if(includesHangul(userInputValue)){
+           setErrorMessage('한글은 입력할 수 없습니다.')
+         }
+        setValue(userInputValue.toUpperCase())
+      }
+
+      return (
+        <form onSubmit={handleCreateSubmit}>
+          <input type="text" name="name" value={value} placeholder="영어 대사를 입력해주세요" onChange={handleInputChange}></input>
+          <button >생성하기</button>
+          <p style={{color:'red'}}>{errorMessage}</p>
+        </form>
+      )
+    }
+
+    const App = () => {
+
+      const [counter, setCounter] = React.useState(
+        jsonLocalStorage.getItem('counter')
+        )
+      const [MainImgState, setMainImgState] = React.useState(BASE_IMG.icefox)
+      const [favorites, setFavorites] = React.useState(jsonLocalStorage.getItem('favorites')
+      || []
+
+      //앞에가 없으면 || 뒤에 것을 사용 반환
+      )
+
+      // 생성하기 버튼 이벤트
+      const updateMainCat = (e) => {
+        setMainImgState(BASE_IMG.cat)
+        const nextCounter = counter + 1
+        setCounter(nextCounter)
+        jsonLocalStorage.setItem('counter', nextCounter)
+      }
+
+
+      // 하트 클릭 이벤트
+      function handleHeartClick (){
+
+        const nextFavorites = [...favorites, MainImgState]
+
+      //... 스프레드 문법을 사용해서 기존 배열(인자1)에 새로운 값(인자2)을 push것과 같음
+        setFavorites(nextFavorites)
+        jsonLocalStorage.setItem('favorites', nextFavorites)
+      }
+
+
+      return (
+        <div>
+          <Title>{counter}번째 이미지 생성</Title>
+          <Form updateMainCat={updateMainCat} />
+          <MainCard onHeartClick={handleHeartClick} img={MainImgState} />
+          <Favorites favorites={favorites}/>
+        </div>
+      );
+    };
+
+    //jsx? html 테그와 js의 혼합 사용
+    const 바탕 = document.querySelector('#app')
+
+    // append 해주는 것 ReactDOM render 인자1 = 넣어줄애 인자2 = 바탕
+    ReactDOM.render(<App/>, 바탕)
+  </script>
+</body>
+
+</html>

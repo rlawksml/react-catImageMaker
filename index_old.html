@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="./assets/imgs/cat.jpg">
+  <style>
+    * {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      color: #222;
+      text-decoration: none;
+    }
+
+    button {
+      border: 1px solid #222;
+      padding: 0 10px;
+      background-color: #fff;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="main-section" id="app"></div>
+
+
+
+  <!-- react dom 라이브러리 넣어주기 -->
+  <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+  <!-- jsx를 도와주는 babel 넣어주기 -->
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  <!-- react 내용 작성 -->
+  <!-- 리액트 jsx문법이 사용되는 곳에 type을 text/babel로 설정해줘야 함 -->
+  <script type="text/babel">
+    const BASE_IMG_cat = "./assets/imgs/cat.jpg"
+    const BASE_IMG_lion = "./assets/imgs/lion.jpg"
+    const BASE_IMG_ice = "./assets/imgs/icefox.jpg"
+
+
+
+    const catItem = (
+      <li>
+        <img src={BASE_IMG_cat}/>
+      </li>
+    )
+
+    // 중괄호를 사용해서 작성해야함n 
+    // 자바스크립트의 변수를 사용하기 위해서는 {} 중괄호 사용
+    const favorites = (
+    <ul className="cat-list">
+      <CatItem img={BASE_IMG_cat}/>
+      <CatItem img={BASE_IMG_ice}/>
+    </ul>
+      )
+
+    }
+
+    const mainCard = (
+      <div className="main-card">
+        <img src={BASE_IMG_lion} alt="사자" width="400" />
+        <button>Heart</button>
+      </div>
+    )
+
+    }
+
+    const form = (
+      <form>
+        <input type="text" name="name" placeholder="영어 대사를 입력해주세요"></input>
+        <button>생성하기</button>
+      </form>
+    )
+
+    const title = (
+      <h2>
+        우와앙 사진 만들기
+      </h2>
+    )
+
+    const app = (
+      <div>
+        {title}
+        {form}
+        <mainCard />
+        <Favorites />
+      </div>
+    )
+
+
+
+    //jsx? html 테그와 js의 혼합 사용
+
+    const 바탕 = document.getElementById('app')
+
+    // append 해주는 것 ReactDOM render 인자1 = 넣어줄애 인자2 = 바탕
+    ReactDOM.render(app, 바탕)
+  </script>
+</body>
+
+</html>
